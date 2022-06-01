@@ -63,6 +63,16 @@ public class MetricClientFactory {
     return client;
   }
 
+  private static OpenTelemetryMetricClient initializeOpenTelemetryMetricClient(
+                                                                               MetricEmittingApp metricEmittingApp) {
+    OpenTelemetryMetricClient client = new OpenTelemetryMetricClient();
+    final Configs configs = new EnvConfigs();
+
+    client.initialize(metricEmittingApp, new DatadogClientConfiguration(configs));
+    metricClient = client;
+    return client;
+  }
+
   static void flush() {
     metricClient = null;
   }
