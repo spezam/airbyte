@@ -707,7 +707,11 @@ class PullRequestStats(PullRequestSubstream):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        MAX_RETRIES = 3
+        adapter = requests.adapters.HTTPAdapter(max_retries=MAX_RETRIES)
         self._session = requests_cache.CachedSession("pull_request_stats_cache")
+        self._session.mount("https://", adapter)
+        self._session.mount("http://", adapter)
 
     @property
     def record_keys(self) -> List[str]:
