@@ -1,6 +1,7 @@
 import { Field, FieldProps, Form, Formik, FormikHelpers } from "formik";
 import React, { useCallback, useState } from "react";
 import { FormattedMessage, useIntl } from "react-intl";
+import { useToggle } from "react-use";
 import styled from "styled-components";
 
 import { ControlLabels, DropDown, DropDownRow, H5, Input, Label } from "components";
@@ -135,6 +136,7 @@ const ConnectionForm: React.FC<ConnectionFormProps> = ({
 
   const [modalIsOpen, setResetModalIsOpen] = useState(false);
   const [submitError, setSubmitError] = useState<Error | null>(null);
+  const [editingTransformation, toggleEditingTransformation] = useToggle(false);
 
   const formatMessage = useIntl().formatMessage;
 
@@ -338,12 +340,16 @@ const ConnectionForm: React.FC<ConnectionFormProps> = ({
             )}
             {mode === "create" && (
               <>
-                <OperationsSection destDefinition={destDefinition} />
+                <OperationsSection
+                  destDefinition={destDefinition}
+                  onStartEditTransformation={toggleEditingTransformation}
+                  onEndEditTransformation={toggleEditingTransformation}
+                />
                 <EditLaterMessage message={<FormattedMessage id="form.dataSync.message" />} />
                 <CreateControls
                   additionBottomControls={additionBottomControls}
                   isSubmitting={isSubmitting}
-                  isValid={isValid}
+                  isValid={isValid && !editingTransformation}
                   errorMessage={
                     errorMessage || !isValid ? formatMessage({ id: "connectionForm.validation.error" }) : null
                   }
